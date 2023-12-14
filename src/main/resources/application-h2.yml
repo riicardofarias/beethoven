@@ -1,0 +1,5 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///beethovendb?options=MODE=MYSQL;DB_CLOSE_ON_EXIT=FALSE
+  rabbitmq:
+    enable: false

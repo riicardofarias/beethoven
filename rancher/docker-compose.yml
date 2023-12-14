@@ -1,0 +1,26 @@
+version: '2'
+services:
+  lb-beethoven:
+    image: rancher/load-balancer-service
+    expose:
+      - 80:8080
+    links:
+      - beethoven:beethoven
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=api/lb-beethoven
+  beethoven:
+    image: 849906921521.dkr.ecr.us-east-1.amazonaws.com/beethoven:${TAG_VERSION}
+    environment:
+      JAVA_OPTS: -XX:MaxRAMPercentage=${MEM_MRP} -XshowSettings:vm
+      SPRING_PROFILES_ACTIVE: ${DEPLOYENV}
+      SPRING_CLOUD_CONFIG_LABEL: ${DEPLOYENV}
+      SPRING_CLOUD_CONFIG_USERNAME: ${CONFIG_SERVER_USERNAME}
+      SPRING_CLOUD_CONFIG_PASSWORD: ${CONFIG_SERVER_PASSWORD}
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=api/beethoven
+    mem_limit: ${MEM_MAX}M
+    mem_reservation: ${MEM_RES}M

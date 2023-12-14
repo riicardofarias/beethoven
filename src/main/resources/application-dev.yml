@@ -1,0 +1,15 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/beethovendb
+    username: root
+    password: root
+    pool:
+      initial-size: 3
+      max-size: 5
+  rabbitmq:
+    enable: true
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /

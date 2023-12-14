@@ -1,0 +1,67 @@
+# ===============================
+# general
+# ===============================
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: beethoven
+  profiles:
+    active: dev
+  data:
+    redis:
+      repositories:
+        enabled: false
+  webflux:
+    base-path: /beethoven/api/v1
+
+server:
+  port: 8080
+
+# ===============================
+# metrics
+# ===============================
+management:
+  endpoints:
+    web.exposure.include: metrics,prometheus,health
+    metrics:
+      enabled: 'true'
+      export.prometheus.enabled: 'true'
+    endpoint.prometheus.enabled: 'true'
+
+springdoc:
+  swagger-ui:
+    config-url: ${springdoc.api-docs.path}/swagger-config
+    urls:
+      - url: ${springdoc.api-docs.path}
+        name: root
+    path: /public/swagger-ui
+  api-docs:
+    path: /public/api-docs
+
+app:
+  rabbitmq:
+    exchange: beethoven.topic
+    queue: beethoven.v2.handler
+    routing: beethoven.resource
+    minutes-retry: 5
+    max-attempt: 12
+# ===============================
+# cloud config
+# ===============================
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+  cloud.config.enabled: false
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - prd
+        - qas
+        - hml
+    import: "configserver:http://config-server.x-config:8888"

@@ -1,0 +1,38 @@
+version: '2'
+services:
+  lb-beethoven:
+    scale: 1
+    start_on_create: true
+    lb_config:
+      certs: [ ]
+      port_rules:
+        - protocol: http
+          service: beethoven
+          source_port: 80
+          target_port: 8080
+      health_check:
+        healthy_threshold: 2
+        response_timeout: 2000
+        port: 42
+        unhealthy_threshold: 3
+        initializing_timeout: 60000
+        interval: 10000
+        strategy: recreate
+        reinitializing_timeout: 60000
+  beethoven:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 3
+      response_timeout: 5000
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 10000
+      strategy: recreate
+      request_line: GET /beethoven/api/v1/actuator/health HTTP/1.0
+      reinitializing_timeout: 60000
+
+
+
+
